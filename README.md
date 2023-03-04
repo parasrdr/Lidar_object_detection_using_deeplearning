@@ -8,14 +8,14 @@ Also, Performance evaluation is done by computing Average precision & mAP metric
 
 Lidar data from 360 degree Lidar mounted on vehicle's top is used. you can visit https://waymo.com/intl/en_us/open/data/perception/#lidar-data,  https://waymo.com/intl/en_us/open/data/perception/#3d-bounding-boxes to familiarise yourself with Waymos's Lidar sensors,datarecords,frame structures & 3D labels.<br>
 <br>
- ![Getting Started](./images/capture2.jpg) ![Getting Started](./images/capture.jpg) <br>
-  ![Getting Started](./images/waymo2.jpg)
+ ![Getting Started](Images/Capture2.JPG) ![Getting Started](Images/Capture.JPG) <br>
+  ![Getting Started](Images/waymo2.JPG)
 
 ### Pretrained Models
 The ResNet-based Keypoint Feature Pyramid Network (KFPN) was proposed in RTM3D paper.https://arxiv.org/pdf/2001.03343.pdf. The open source implementation of this network from https://github.com/maudzung/SFA3D is used in this project. This model is shipped pretrained on KITTI Lidar data.
 For technical details on network architecture /model implementation please refer to https://github.com/maudzung/SFA3D/blob/master/Technical_details.md
 
-![Getting Started](./images/guuu.jpg)   ![Getting Started](./images/fpn.jpg) ![Getting Started](./images/epn.jpg)![Getting Started](./images/detection.jpg)
+![Getting Started](Images/guuu.JPG)   ![Getting Started](Images/fpn.JPG) ![Getting Started](Images/epn.JPG)![Getting Started](Images/detection.JPG)
 
 
 - **Input**: 
@@ -127,22 +127,22 @@ Parts of this project are based on the following repositories:
 Waymo stores Lidar data as range images which are like 360 degree panoramic view of environment. Each pixel position corresponds to a direction & elevation around the ego car/sensor and stores range of laser reflections coming from that direction.First a transformation from spherical coordinates to cartesian coordinates  is done using lidar calibration data to extract point cloud .In second step
 lidar points are transformed from lidar frame to Vehicle's coordinate frame.
 
-![Getting Started](./images/range_image.jpg)
+![Getting Started](Images/range_image.JPG)
 
 #### 2. Preprocessing Point-Clouds
 For object detection we define a region of interest around the car. 50m to the front of car (x-axis), 25m to the left and right side (y-axis) &  -1m to 3m in z direction.
 
-![Getting Started](./images/range.jpg)
+![Getting Started](Images/range.JPG)
 
 
 
 The input point cloud needs to be filtered and cropped. Also the road plane needs to be shifted to account for road inclination & slope.
 
-![Getting Started](./images/crop_pcd.jpg)
+![Getting Started](Images/crop_pcd.JPG)
 
 Resulting point cloud
 
-![Getting Started](./images/pcd1.jpg)  ![Getting Started](./images/arrow.png)              ![Getting Started](./images/pcd2.jpg)
+![Getting Started](Images/pcd1.JPG)  ![Getting Started](Images/arrow.png)              ![Getting Started](Images/pcd2.JPG)
 
 
 
@@ -152,26 +152,26 @@ Deep learning model takes BEV map as Input for further processing.3D point cloud
 
 
 
-![Getting Started](./images/grid.jpg)                 ![Getting Started](./images/bev.jpg)
+![Getting Started](Images/grid.JPG)                 ![Getting Started](Images/bev.JPG)
 
 Step 1 : Descritize the grid cells and convert point coordinates from metric vehicle space to BEV pixel coordinate space. Each 3D point now has a grid cell/pixel coordinate (i,j) in BEV map. BEV size of 608 X 608 results in spatial resolution of ~ 8cm.
 
-![Getting Started](./images/discrete.jpg)
+![Getting Started](Images/discrete.JPG)
 
 Step 2 : BEV map has 3 channels.height, density and intensity. We have to compute these values for each pixel of BEV map and then convert them into 8 bit integers(0-255). As described in original paper we can use following formulas's to encode the height, density and intensity of lidar points in given BEV cell.
 
-![Getting Started](./images/formula.jpg)
+![Getting Started](Images/formula.JPG)
 
 As can be seen below, height channel is brighter in regions with taller objects in the scene.eg. car roof,trees etc.
 density channel can seperate edges strongly as most reflections come from sides, back of the objects in the scene
 Intensity channel is stronger from highly reflective & metallic objects like tail lights, traffic signs,number plates etc. 
 
-![Getting Started](./images/height.jpg) ![Getting Started](./images/intensity.jpg) ![Getting Started](./images/density.jpg)
+![Getting Started](Images/height.JPG) ![Getting Started](Images/intensity.JPG) ![Getting Started](Images/density.JPG)
 
 Step 3: BEV map can be assembled by combining these 3 channels.
 
-![Getting Started](./images/channels.jpg) 
-![Getting Started](./images/final.jpg) 
+![Getting Started](Images/channels.JPG) 
+![Getting Started](Images/final.JPG) 
 
 
 
@@ -181,25 +181,25 @@ Step 1 : Integrate the pretrained model inside our testing/inference framework.
 
 Using the original repository https://github.com/maudzung/SFA3D ,particularly the test.py file,you can extract the relevant model configurations from 'parse_test_configs()' and added them in the 'load_configs_model' config dictionary inside our objdet_detect.py file.
 
-![Getting Started](./images/configs.jpg) 
-![Getting Started](./images/configs2.jpg) 
+![Getting Started](Images/configs.JPG) 
+![Getting Started](Images/configs2.JPG) 
 
 Step 2: Instantiating the fpn resnet model and load the pretrained model state_dict/ weights.
 
-![Getting Started](./images/model1.jpg)
-![Getting Started](./images/model2.jpg)
+![Getting Started](Images/model1.JPG)
+![Getting Started](Images/model2.JPG)
 
 Step 3 : Decode and postprocess model output to get object list as 3D bounding boxes.
 
-![Getting Started](./images/infer1.jpg)
+![Getting Started](Images/infer1.JPG)
 
 Transform the Model output tuned to the bounding box format [class-id, x, y, z, h, w, l, yaw]
 
-![Getting Started](./images/infer2.jpg)
+![Getting Started](Images/infer2.JPG)
 
 Output of the above task is as shown below:
 
-![Getting Started](./images/resnet_detections.png)
+![Getting Started](Images/resnet_detections.png)
 
 
 ### Performance Evaluation of Object detector
@@ -208,11 +208,11 @@ we have to compare the ground-truth bounding box to the detected box.we use the 
 
 
 
-![Getting Started](./images/iou1.jpg)![Getting Started](./images/iou3.jpg)
+![Getting Started](Images/iou1.JPG)![Getting Started](Images/iou3.JPG)
 
 Step 1 : we find pairings between ground-truth labels and detections, later false negatives and false positives are computed to calculate precision and recall. After processing all the frames of test sequence, the performance of the object detection algorithm is evaluated. 
 
-![Getting Started](./images/iou2.jpg)                                     ![Getting Started](./images/pr2.png)<br>
+![Getting Started](Images/iou2.JPG)                                     ![Getting Started](Images/pr2.png)<br>
 
 Step 2: Precision-Recall Curve and Average Precision.
 
@@ -222,7 +222,7 @@ precision will decreaseand recall might increase.
 Average precision is a metric that averages out model performance on a test dataset at diferent settings of confidence threshold.<br>
 Mean Average Precision is then Average Precision calculated over a range of IOU thresholds. For eg. mAP@0.5:0.1:0.7 where 0.1 is step size.
 
-![Getting Started](./images/pr3.jpg)                                                        ![Getting Started](./images/mAP.png)
+![Getting Started](Images/pr3.JPG)                                                        ![Getting Started](Images/mAP.png)
 
 ### Project Extension : How to Train FPN-Resnet model on Waymo Training data sequences.
 
@@ -236,22 +236,22 @@ Step 1: First you need to clone https://github.com/maudzung/SFA3D repository.The
   and add them in cloned repository at the location shown in below image
   Also add the downloaded waymo training & validation data sequences here.
 
-  ![Getting Started](./images/train.jpg)
+  ![Getting Started](Images/train.JPG)
 
   Step 2: Extract the BEV Maps and Target Labels from a waymo training sequence for training this FPN resnet model.
   Select the individual data sequence you want to extract inside waymo_extract_BEV_labels_from_training_data.py file and then run this.
 
-  ![Getting Started](./images/train3.jpg)
+  ![Getting Started](Images/train3.JPG)
 
   Step 3: Set your training configuration/Hyperparameters inside train_waymo_config.py
 
-  ![Getting Started](./images/training_config.jpg)
+  ![Getting Started](Images/training_config.JPG)
 
   Step 4: run train_waymo.py
 
   you should see something like this
 
-  ![Getting Started](./images/train.gif.gif)
+  ![Getting Started](Images/train.gif.gif)
 
 #### Tensorboard
 
@@ -268,17 +268,17 @@ tensorboard --logdir=./
 
 I could monitor the training progress & losses on tensorboard , however we need more training data and download number of waymo training sequences from [here](https://console.cloud.google.com/storage/browser/waymo_open_dataset_v_1_2_0_individual_files) .Each sequence contains around 200 frames. Tensorboard log files are saved in logs directory of this project.
 
-  ![Getting Started](./images/tensorboard.jpg)
+  ![Getting Started](Images/tensorboard.JPG)
 
 ### Integration to object detection framework
 
 After training you can integrate your model checkpoint following the same steps exactly as we did before for adding pretrained models
 
- ![Getting Started](./images/waymo.jpg)
- ![Getting Started](./images/waymo5.jpg)
+ ![Getting Started](Images/waymo.JPG)
+ ![Getting Started](Images/waymo5.JPG)
 
 then finally select the model you want to use for object detection
-![Getting Started](./images/waymo6.jpg)
+![Getting Started](Images/waymo6.JPG)
 
 
 ### Future work
